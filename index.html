@@ -114,10 +114,9 @@
             letter-spacing: 1px;
         }
 
-        /* THIẾT KẾ CHUNG CHO THẺ (GLASSMORPHISM MỊN MÀNG) */
+        /* THIẾT KẾ CHUNG CHO THẺ */
         .e-card {
             width: 500px;
-            /* ĐÃ SỬA: Chuyển từ height sang min-height để thẻ tự giãn khi chữ dài */
             min-height: 385px; 
             background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
             border-radius: 20px; 
@@ -129,10 +128,11 @@
                         inset 0 1px 1px rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-between; /* Giúp đẩy Footer và QR Code xuống dưới cùng */
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-bottom: 3px solid var(--secondary-color);
             overflow: hidden;
+            transition: height 0.2s ease; /* Hiệu ứng kéo giãn mượt mà */
         }
 
         /* Hiệu ứng ánh sáng chéo (phản quang nhẹ) */
@@ -205,7 +205,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 15px; /* Tăng khoảng cách margin bottom để thoáng hơn khi chữ dài */
+            margin-bottom: 15px; 
             position: relative;
             z-index: 2;
         }
@@ -350,7 +350,7 @@
             font-weight: 700;
         }
 
-        /* NÚT TẢI - THIẾT KẾ MƯỢT MÀ HƠN */
+        /* NÚT TẢI */
         .btn-group {
             display: flex;
             gap: 15px;
@@ -409,7 +409,6 @@
             <label for="inputDiaChi">Địa Chỉ:</label>
             <input type="text" id="inputDiaChi" placeholder="Nhập địa chỉ" oninput="updateCard()">
         </div>
-        <!-- Bổ sung nhập Số điện thoại -->
         <div class="form-group">
             <label for="inputDienThoai">Số Điện Thoại:</label>
             <input type="text" id="inputDienThoai" placeholder="Nhập số điện thoại" oninput="updateCard()">
@@ -423,7 +422,6 @@
             <div class="card-label-title">Mặt Trước</div>
             <div id="eCardFront" class="e-card">
                 <div class="card-header">
-                    <!-- Bổ sung Logo EVN -->
                     <img src="icon-512.png.png" alt="Logo EVN">
                     <div class="card-header-text">
                         <div class="company">CÔNG TY ĐIỆN LỰC AN GIANG</div>
@@ -446,7 +444,6 @@
                         <span class="card-label">ĐỊA CHỈ:</span>
                         <span id="cardDiaChi" class="card-value">---</span>
                     </div>
-                    <!-- Bổ sung dòng Số điện thoại -->
                     <div class="card-row">
                         <span class="card-label">ĐIỆN THOẠI:</span>
                         <span id="cardDienThoai" class="card-value">---</span>
@@ -523,6 +520,25 @@
             document.getElementById('cardTenKH').innerText = tenKH ? tenKH.toUpperCase() : '---';
             document.getElementById('cardDiaChi').innerText = diaChi ? diaChi : '---';
             document.getElementById('cardDienThoai').innerText = dienThoai ? dienThoai : '---';
+
+            // --- ĐỒNG BỘ CHIỀU CAO 2 THẺ ---
+            const frontCard = document.getElementById('eCardFront');
+            const backCard = document.getElementById('eCardBack');
+
+            // 1. Reset chiều cao về auto để form có thể "co lại" nếu người dùng xóa bớt chữ
+            frontCard.style.height = 'auto';
+            backCard.style.height = 'auto';
+
+            // 2. Lấy kích thước thực tế của thẻ sau khi text vừa nhảy dòng
+            const frontHeight = frontCard.offsetHeight;
+            const backHeight = backCard.offsetHeight;
+            
+            // 3. Tìm kích thước cao nhất giữa 2 thẻ, mức tối thiểu luôn là 385px
+            const maxHeight = Math.max(frontHeight, backHeight, 385);
+
+            // 4. Ép 2 thẻ hiển thị chung một chiều cao lớn nhất
+            frontCard.style.height = maxHeight + 'px';
+            backCard.style.height = maxHeight + 'px';
         }
 
         // Khởi tạo mã QR trực tiếp thành thẻ <img> ngay khi tải trang
@@ -531,7 +547,7 @@
                 text: "https://play.google.com/store/apps/details?id=com.evn.cskh.vn",
                 width: 58,
                 height: 58,
-                colorDark : "#003366", // Đổi màu QR Code tiệp màu nhận diện
+                colorDark : "#003366", 
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.L
             });
@@ -544,22 +560,24 @@
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.L
             });
+
+            // Chạy cập nhật một lần lúc web vừa load để chốt khung
+            setTimeout(updateCard, 100);
         };
 
-        // CẤU HÌNH XUẤT ẢNH CHẤT LƯỢNG CAO (SCALE 4)
+        // Hàm tải ảnh
         function downloadSingleCard(elementId, fileName) {
             const cardElement = document.getElementById(elementId);
             
             html2canvas(cardElement, {
-                scale: 4, // Nâng tỷ lệ render lên mức cực sắc nét
+                scale: 4, 
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null, 
-                logging: false // Tắt log mượt mà hơn
+                logging: false 
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = fileName;
-                // Có thể chuyển sang image/jpeg với quality 1.0 nếu file quá nặng, nhưng image/png giữ nền trong suốt tốt hơn
                 link.href = canvas.toDataURL('image/png'); 
                 link.click();
             });
