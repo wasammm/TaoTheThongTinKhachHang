@@ -27,7 +27,7 @@
 
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            -webkit-font-smoothing: antialiased; /* Khử răng cưa giúp chữ mịn màng hơn */
+            -webkit-font-smoothing: antialiased; 
             -moz-osx-font-smoothing: grayscale;
             background-color: var(--bg-color);
             margin: 0;
@@ -54,7 +54,7 @@
             background: #fff;
             padding: 30px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Bóng đổ siêu mịn */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
             margin-bottom: 40px;
             border: 1px solid rgba(0,0,0,0.03);
         }
@@ -117,21 +117,19 @@
         /* THIẾT KẾ CHUNG CHO THẺ (GLASSMORPHISM MỊN MÀNG) */
         .e-card {
             width: 500px;
-            height: 385px;
-            /* Phối màu mượt mà, hơi trong suốt để tạo độ sâu */
+            /* ĐÃ SỬA: Chuyển từ height sang min-height để thẻ tự giãn khi chữ dài */
+            min-height: 385px; 
             background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
-            border-radius: 20px; /* Bo góc mềm mại hơn */
+            border-radius: 20px; 
             color: #fff;
             padding: 25px;
             box-sizing: border-box;
             position: relative;
-            /* Bóng đổ đa tầng tạo cảm giác thẻ nổi bật, mịn màng */
             box-shadow: 0 20px 40px rgba(0, 31, 63, 0.25), 
                         inset 0 1px 1px rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            /* Viền thẻ thanh lịch */
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-bottom: 3px solid var(--secondary-color);
             overflow: hidden;
@@ -176,7 +174,7 @@
         .card-header .company {
             font-size: 14px;
             font-weight: 600;
-            color: var(--secondary-light); /* Màu cam sáng cho dịu mắt */
+            color: var(--secondary-light); 
             letter-spacing: 0.5px;
         }
 
@@ -186,7 +184,7 @@
             color: #ffffff; 
             margin-top: 4px;
             text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Bóng chữ tạo độ sâu */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
         }
 
         .card-title {
@@ -195,7 +193,7 @@
             font-weight: 700;
             letter-spacing: 1.5px;
             color: #fff;
-            background: rgba(255, 255, 255, 0.1); /* Nền kính mờ trong suốt */
+            background: rgba(255, 255, 255, 0.1); 
             padding: 8px;
             border-radius: 8px;
             margin: 12px 0;
@@ -207,7 +205,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 5px;
+            margin-bottom: 15px; /* Tăng khoảng cách margin bottom để thoáng hơn khi chữ dài */
             position: relative;
             z-index: 2;
         }
