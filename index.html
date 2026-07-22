@@ -11,8 +11,9 @@
     
     <style>
         :root {
-            --primary-color: #0056b3;
-            --secondary-color: #ffc107;
+            /* Cập nhật màu sắc nhận diện EVN: Xanh dương và Cam */
+            --primary-color: #0055a4;
+            --secondary-color: #f26522;
             --bg-color: #f4f7f6;
         }
 
@@ -95,8 +96,8 @@
 
         .e-card {
             width: 500px;
-            height: 360px;
-            background: linear-gradient(135deg, #003366, #001f3f, #000a1a);
+            height: 380px; /* Tăng chút chiều cao để chứa thêm SĐT */
+            background: linear-gradient(135deg, var(--primary-color), #003366, #001f3f);
             border-radius: 16px;
             color: #fff;
             padding: 20px 22px;
@@ -106,15 +107,30 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 2px solid #ffc107;
+            border: 2px solid var(--secondary-color);
             overflow: hidden;
         }
 
         /* STYLES MẶT TRƯỚC */
         .card-header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 8px;
+            padding-bottom: 10px;
+        }
+        
+        .card-header img {
+            width: 48px;
+            height: 48px;
+            background: #fff;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        .card-header-text {
+            text-align: center; /* Đã thay đổi thành center để canh giữa 2 dòng chữ */
         }
 
         .card-header .company {
@@ -125,9 +141,11 @@
         }
 
         .card-header .branch {
-            font-size: 12px;
-            color: #ddd;
-            margin-top: 2px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff; 
+            margin-top: 3px;
+            text-transform: uppercase;
         }
 
         .card-title {
@@ -233,7 +251,7 @@
         }
 
         .back-deadline {
-            background: rgba(255, 193, 7, 0.15);
+            background: rgba(242, 101, 34, 0.15); /* Màu nền cam EVN nhạt */
             border: 1px solid var(--secondary-color);
             color: #fff;
             padding: 5px 10px;
@@ -308,8 +326,8 @@
         }
 
         .btn-secondary {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 86, 179, 0.3);
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0, 85, 164, 0.3);
         }
 
         .btn-secondary:hover {
@@ -335,6 +353,11 @@
             <label for="inputDiaChi">Địa Chỉ:</label>
             <input type="text" id="inputDiaChi" placeholder="Nhập địa chỉ" oninput="updateCard()">
         </div>
+        <!-- Bổ sung nhập Số điện thoại -->
+        <div class="form-group">
+            <label for="inputDienThoai">Số Điện Thoại:</label>
+            <input type="text" id="inputDienThoai" placeholder="Nhập số điện thoại" oninput="updateCard()">
+        </div>
     </div>
 
     <!-- KHU VỰC THẺ VÀ NÚT TẢI -->
@@ -344,8 +367,12 @@
             <div class="card-label-title">Mặt Trước</div>
             <div id="eCardFront" class="e-card">
                 <div class="card-header">
-                    <div class="company"> CÔNG TY ĐIỆN LỰC AN GIANG</div>
-                    <div class="branch"> ĐIỆN LỰC RẠCH GIÁ</div>
+                    <!-- Bổ sung Logo EVN -->
+                    <img src="icon-512.png.png" alt="Logo EVN">
+                    <div class="card-header-text">
+                        <div class="company"> CÔNG TY ĐIỆN LỰC AN GIANG</div>
+                        <div class="branch"> ĐIỆN LỰC RẠCH GIÁ</div>
+                    </div>
                 </div>
                 
                 <div class="card-title"> THẺ THÔNG TIN KHÁCH HÀNG</div>
@@ -362,6 +389,11 @@
                     <div class="card-row">
                         <span class="card-label">ĐỊA CHỈ:</span>
                         <span id="cardDiaChi" class="card-value">---</span>
+                    </div>
+                    <!-- Bổ sung dòng Số điện thoại -->
+                    <div class="card-row">
+                        <span class="card-label">ĐIỆN THOẠI:</span>
+                        <span id="cardDienThoai" class="card-value">---</span>
                     </div>
                 </div>
 
@@ -429,10 +461,12 @@
             const maKH = document.getElementById('inputMaKH').value;
             const tenKH = document.getElementById('inputTenKH').value;
             const diaChi = document.getElementById('inputDiaChi').value;
+            const dienThoai = document.getElementById('inputDienThoai').value; // Cập nhật biến SĐT
 
             document.getElementById('cardMaKH').innerText = maKH ? maKH.toUpperCase() : '---';
             document.getElementById('cardTenKH').innerText = tenKH ? tenKH.toUpperCase() : '---';
             document.getElementById('cardDiaChi').innerText = diaChi ? diaChi : '---';
+            document.getElementById('cardDienThoai').innerText = dienThoai ? dienThoai : '---'; // Cập nhật UI SĐT
         }
 
         // Khởi tạo mã QR trực tiếp thành thẻ <img> ngay khi tải trang
