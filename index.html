@@ -4,80 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tạo Thẻ Thông Tin Khách Hàng Điện Tử (2 Mặt)</title>
+    
+    <!-- Tích hợp Font chữ cao cấp cho tiếng Việt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Thư viện chuyển đổi HTML thành hình ảnh chất lượng cao -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- Thư viện tạo mã QR thật dưới dạng ảnh trực tiếp -->
+    <!-- Thư viện tạo mã QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
-            /* Cập nhật màu sắc nhận diện EVN: Xanh dương và Cam */
+            /* Màu sắc nhận diện EVN */
             --primary-color: #0055a4;
+            --primary-dark: #003366;
             --secondary-color: #f26522;
-            --bg-color: #f4f7f6;
+            --secondary-light: #ff8547;
+            --bg-color: #eef2f5;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            -webkit-font-smoothing: antialiased; /* Khử răng cưa giúp chữ mịn màng hơn */
+            -moz-osx-font-smoothing: grayscale;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 20px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            color: #333;
         }
 
         h2 {
-            color: #333;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 0.5px;
         }
 
+        /* KHU VỰC NHẬP LIỆU */
         .container {
             width: 100%;
             max-width: 520px;
             background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Bóng đổ siêu mịn */
+            margin-bottom: 40px;
+            border: 1px solid rgba(0,0,0,0.03);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #444;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
             font-size: 14px;
         }
 
         input[type="text"] {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 12px 15px;
+            border: 1.5px solid #e1e5ea;
+            border-radius: 8px;
             font-size: 15px;
+            font-family: 'Be Vietnam Pro', sans-serif;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            background-color: #f9fbfc;
         }
 
         input[type="text"]:focus {
             border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 85, 164, 0.1);
             outline: none;
         }
 
         /* KHU VỰC THIẾT KẾ THẺ ĐIỆN TỬ (2 MẶT) */
         .card-preview-wrapper {
             display: flex;
-            gap: 25px;
+            gap: 35px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .card-column {
@@ -87,28 +106,46 @@
         }
 
         .card-label-title {
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 8px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 12px;
             text-transform: uppercase;
-            font-size: 14px;
+            font-size: 13px;
+            letter-spacing: 1px;
         }
 
+        /* THIẾT KẾ CHUNG CHO THẺ (GLASSMORPHISM MỊN MÀNG) */
         .e-card {
             width: 500px;
-            height: 380px; /* Tăng chút chiều cao để chứa thêm SĐT */
-            background: linear-gradient(135deg, var(--primary-color), #003366, #001f3f);
-            border-radius: 16px;
+            height: 385px;
+            /* Phối màu mượt mà, hơi trong suốt để tạo độ sâu */
+            background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
+            border-radius: 20px; /* Bo góc mềm mại hơn */
             color: #fff;
-            padding: 20px 22px;
+            padding: 25px;
             box-sizing: border-box;
             position: relative;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            /* Bóng đổ đa tầng tạo cảm giác thẻ nổi bật, mịn màng */
+            box-shadow: 0 20px 40px rgba(0, 31, 63, 0.25), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 2px solid var(--secondary-color);
+            /* Viền thẻ thanh lịch */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 3px solid var(--secondary-color);
             overflow: hidden;
+        }
+
+        /* Hiệu ứng ánh sáng chéo (phản quang nhẹ) */
+        .e-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -50%;
+            width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
         }
 
         /* STYLES MẶT TRƯỚC */
@@ -117,221 +154,242 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 12px;
+            position: relative;
+            z-index: 2;
         }
         
         .card-header img {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: #fff;
             border-radius: 50%;
-            padding: 2px;
+            padding: 3px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .card-header-text {
-            text-align: center; /* Đã thay đổi thành center để canh giữa 2 dòng chữ */
+            text-align: center;
         }
 
         .card-header .company {
-            font-size: 15px;
-            font-weight: bold;
-            color: var(--secondary-color);
-            letter-spacing: 1px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--secondary-light); /* Màu cam sáng cho dịu mắt */
+            letter-spacing: 0.5px;
         }
 
         .card-header .branch {
-            font-size: 15px;
-            font-weight: bold;
-            color: #fff; 
-            margin-top: 3px;
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff; 
+            margin-top: 4px;
             text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Bóng chữ tạo độ sâu */
         }
 
         .card-title {
             font-size: 17px;
             text-align: center;
-            font-weight: bold;
-            letter-spacing: 1px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
             color: #fff;
-            background: rgba(255, 255, 255, 0.12);
-            padding: 7px;
-            border-radius: 4px;
-            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1); /* Nền kính mờ trong suốt */
+            padding: 8px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .card-info {
-            font-size: 14px;
+            font-size: 14.5px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
         }
 
         .card-row {
             display: flex;
+            align-items: flex-start;
         }
 
         .card-label {
-            width: 110px;
-            font-weight: bold;
-            color: var(--secondary-color);
+            width: 115px;
+            font-weight: 600;
+            color: var(--secondary-light);
+            font-size: 13px;
+            margin-top: 2px;
         }
 
         .card-value {
             flex: 1;
             word-break: break-word;
-            font-weight: 600;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #f8f9fa;
         }
 
         .qr-bottom-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-top: 1px dashed rgba(255, 255, 255, 0.3);
-            padding-top: 10px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-top: 12px;
             margin-top: auto;
+            position: relative;
+            z-index: 2;
         }
 
         .qr-text-guide {
             font-size: 13px;
-            color: #ddd;
+            color: #d1d8e0;
             max-width: 200px;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-weight: 400;
         }
 
         .qr-text-guide span {
             color: var(--secondary-color);
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 14px;
         }
 
         .qr-codes-wrapper {
             display: flex;
-            gap: 12px;
+            gap: 15px;
         }
 
         .qr-item {
-            background: #fff;
-            padding: 5px 6px 3px 6px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 6px 6px 4px 6px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #111;
+            color: var(--primary-dark);
             font-size: 10px;
-            font-weight: bold;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
 
         .qr-code-box {
             width: 58px;
             height: 58px;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
-        .qr-code-box canvas {
-            display: none;
-        }
-        
-        .qr-code-box img {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+        .qr-code-box canvas { display: none; }
+        .qr-code-box img { display: block; width: 100%; height: 100%; }
 
         /* STYLES MẶT SAU */
         .back-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: var(--secondary-color);
+            font-size: 15.5px;
+            font-weight: 700;
+            color: var(--secondary-light);
             text-align: center;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 10px;
             letter-spacing: 0.5px;
         }
 
         .back-deadline {
-            background: rgba(242, 101, 34, 0.15); /* Màu nền cam EVN nhạt */
-            border: 1px solid var(--secondary-color);
+            background: linear-gradient(90deg, rgba(242,101,34,0) 0%, rgba(242,101,34,0.2) 50%, rgba(242,101,34,0) 100%);
             color: #fff;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
             text-align: center;
-            margin: 6px 0;
+            margin: 12px 0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
         .payment-methods {
-            font-size: 11px;
-            line-height: 1.35;
+            font-size: 12.5px;
+            line-height: 1.5;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
+            color: #e8ecef;
         }
 
         .payment-item {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 6px 8px;
-            border-radius: 6px;
-            border-left: 3px solid var(--secondary-color);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary-light);
+            transition: background 0.3s ease;
+        }
+
+        .payment-item:hover {
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .payment-item strong {
-            color: var(--secondary-color);
-            font-size: 11.5px;
+            color: var(--secondary-light);
+            font-size: 13px;
             display: block;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .back-footer {
-            border-top: 1px dashed rgba(255, 255, 255, 0.3);
-            padding-top: 6px;
-            font-size: 11px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-top: 10px;
+            font-size: 12px;
             text-align: center;
-            color: #ddd;
-            line-height: 1.4;
+            color: #c5d0db;
+            line-height: 1.6;
             margin-top: auto;
         }
 
         .back-footer span {
-            color: var(--secondary-color);
-            font-weight: bold;
+            color: #fff;
+            font-weight: 700;
         }
 
-        /* NÚT TẢI */
+        /* NÚT TẢI - THIẾT KẾ MƯỢT MÀ HƠN */
         .btn-group {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 10px;
+            margin-bottom: 40px;
         }
 
         .btn-download {
-            background-color: #28a745;
+            background-color: #20c997;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
-            font-weight: bold;
-            border-radius: 6px;
+            font-weight: 600;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3);
         }
 
         .btn-download:hover {
-            background-color: #218838;
+            background-color: #1ba87e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4);
         }
 
         .btn-secondary {
             background-color: var(--primary-color);
-            box-shadow: 0 4px 10px rgba(0, 85, 164, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 85, 164, 0.3);
         }
 
         .btn-secondary:hover {
-            background-color: #004085;
+            background-color: var(--primary-dark);
+            box-shadow: 0 6px 20px rgba(0, 85, 164, 0.4);
         }
     </style>
 </head>
@@ -370,12 +428,12 @@
                     <!-- Bổ sung Logo EVN -->
                     <img src="icon-512.png.png" alt="Logo EVN">
                     <div class="card-header-text">
-                        <div class="company"> CÔNG TY ĐIỆN LỰC AN GIANG</div>
-                        <div class="branch"> ĐIỆN LỰC RẠCH GIÁ</div>
+                        <div class="company">CÔNG TY ĐIỆN LỰC AN GIANG</div>
+                        <div class="branch">ĐIỆN LỰC RẠCH GIÁ</div>
                     </div>
                 </div>
                 
-                <div class="card-title"> THẺ THÔNG TIN KHÁCH HÀNG</div>
+                <div class="card-title">THẺ THÔNG TIN KHÁCH HÀNG</div>
                 
                 <div class="card-info">
                     <div class="card-row">
@@ -432,11 +490,11 @@
                     </div>
                     <div class="payment-item">
                         <strong>2. Ứng dụng di động:</strong>
-                        App CSKH EVNSPC/EVN; Ví điện tử (MoMo, ZaloPay, VNPay, Viettel Money, Mobile Money...); Ngân hàng số (Internet/Mobile Banking).
+                        App CSKH EVNSPC/EVN; Ví điện tử (MoMo, ZaloPay, VNPay, Viettel Money...); Ngân hàng số.
                     </div>
                     <div class="payment-item">
                         <strong>3. Điểm thu cố định:</strong>
-                        Thanh toán trực tiếp tại điểm giao dịch ngân hàng, cửa hàng tiện lợi, siêu thị, bưu điện, hoặc các đại lý thu hộ ủy quyền.
+                        Thanh toán trực tiếp tại điểm giao dịch ngân hàng, cửa hàng tiện lợi, siêu thị, hoặc đại lý thu hộ.
                     </div>
                 </div>
 
@@ -461,12 +519,12 @@
             const maKH = document.getElementById('inputMaKH').value;
             const tenKH = document.getElementById('inputTenKH').value;
             const diaChi = document.getElementById('inputDiaChi').value;
-            const dienThoai = document.getElementById('inputDienThoai').value; // Cập nhật biến SĐT
+            const dienThoai = document.getElementById('inputDienThoai').value;
 
             document.getElementById('cardMaKH').innerText = maKH ? maKH.toUpperCase() : '---';
             document.getElementById('cardTenKH').innerText = tenKH ? tenKH.toUpperCase() : '---';
             document.getElementById('cardDiaChi').innerText = diaChi ? diaChi : '---';
-            document.getElementById('cardDienThoai').innerText = dienThoai ? dienThoai : '---'; // Cập nhật UI SĐT
+            document.getElementById('cardDienThoai').innerText = dienThoai ? dienThoai : '---';
         }
 
         // Khởi tạo mã QR trực tiếp thành thẻ <img> ngay khi tải trang
@@ -475,7 +533,7 @@
                 text: "https://play.google.com/store/apps/details?id=com.evn.cskh.vn",
                 width: 58,
                 height: 58,
-                colorDark : "#000000",
+                colorDark : "#003366", // Đổi màu QR Code tiệp màu nhận diện
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.L
             });
@@ -484,35 +542,36 @@
                 text: "https://apps.apple.com/vn/app/evn-cskh/id6754793134",
                 width: 58,
                 height: 58,
-                colorDark : "#000000",
+                colorDark : "#003366",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.L
             });
         };
 
-        // Hàm tải 1 mặt thẻ bất kỳ
+        // CẤU HÌNH XUẤT ẢNH CHẤT LƯỢNG CAO (SCALE 4)
         function downloadSingleCard(elementId, fileName) {
             const cardElement = document.getElementById(elementId);
             
             html2canvas(cardElement, {
-                scale: 3,
+                scale: 4, // Nâng tỷ lệ render lên mức cực sắc nét
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: null
+                backgroundColor: null, 
+                logging: false // Tắt log mượt mà hơn
             }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = fileName;
-                link.href = canvas.toDataURL('image/png');
+                // Có thể chuyển sang image/jpeg với quality 1.0 nếu file quá nặng, nhưng image/png giữ nền trong suốt tốt hơn
+                link.href = canvas.toDataURL('image/png'); 
                 link.click();
             });
         }
 
-        // Hàm tải cả 2 mặt cùng lúc
         function downloadBothCards() {
             downloadSingleCard('eCardFront', 'The_Khach_Hang_Mat_Truoc.png');
             setTimeout(() => {
                 downloadSingleCard('eCardBack', 'The_Khach_Hang_Mat_Sau.png');
-            }, 500);
+            }, 600);
         }
     </script>
 
