@@ -2,22 +2,20 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tạo Thẻ Thông Tin Khách Hàng Điện Tử (2 Mặt)</title>
     
-    <!-- Tích hợp Font chữ cao cấp cho tiếng Việt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Thư viện chuyển đổi HTML thành hình ảnh chất lượng cao -->
+    <!-- Thư viện chuyển đổi HTML thành hình ảnh -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Thư viện tạo mã QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
-            /* Màu sắc nhận diện EVN */
             --primary-color: #0055a4;
             --primary-dark: #003366;
             --secondary-color: #f26522;
@@ -28,10 +26,9 @@
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
             -webkit-font-smoothing: antialiased; 
-            -moz-osx-font-smoothing: grayscale;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 30px 20px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -45,551 +42,386 @@
             font-weight: 700;
             color: var(--primary-dark);
             letter-spacing: 0.5px;
+            font-size: 22px;
         }
 
-        /* KHU VỰC NHẬP LIỆU */
-        .container {
+        /* BỐ CỤC KHU VỰC TRÊN (FORM & QR CHIA SẺ) */
+        .top-section {
+            display: flex;
             width: 100%;
-            max-width: 520px;
+            max-width: 1000px;
+            gap: 25px;
+            margin-bottom: 30px;
+            align-items: stretch;
+        }
+
+        .container {
+            flex: 1;
             background: #fff;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-            margin-bottom: 40px;
             border: 1px solid rgba(0,0,0,0.03);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1.5px solid #e1e5ea;
-            border-radius: 8px;
-            font-size: 15px;
-            font-family: 'Be Vietnam Pro', sans-serif;
             box-sizing: border-box;
-            transition: all 0.3s ease;
-            background-color: #f9fbfc;
         }
 
-        input[type="text"]:focus {
-            border-color: var(--primary-color);
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(0, 85, 164, 0.1);
-            outline: none;
+        .share-section {
+            flex: 1;
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center; 
+            border: 2px dashed var(--primary-color);
+            display: none; /* JS sẽ đổi thành flex */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
         }
 
-        /* KHU VỰC THIẾT KẾ THẺ ĐIỆN TỬ (2 MẶT) */
-        .card-preview-wrapper {
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #555; font-size: 14px; }
+        input[type="text"] {
+            width: 100%; padding: 12px 15px; border: 1.5px solid #e1e5ea;
+            border-radius: 8px; font-size: 15px; font-family: inherit;
+            box-sizing: border-box; transition: all 0.3s ease; background-color: #f9fbfc;
+        }
+        input[type="text"]:focus { border-color: var(--primary-color); background-color: #fff; outline: none; }
+
+        .share-section h3 { color: var(--primary-dark); font-size: 16px; margin-top: 0; margin-bottom: 10px; }
+        .share-section p { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.5; }
+        #qrCustomerShare { display: flex; justify-content: center; margin-bottom: 15px; background: white; padding: 10px; border-radius: 10px; }
+
+        /* BỌC 2 THẺ ĐỂ RENDER CHUNG KHI AUTO DOWNLOAD */
+        #combinedCardsWrapper {
             display: flex;
-            gap: 35px;
+            gap: 25px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 30px;
+            padding: 10px;
+            width: 100%;
         }
 
-        .card-column {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .card-label-title {
-            font-weight: 700;
-            color: #888;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
-
-        /* THIẾT KẾ CHUNG CHO THẺ */
-        .e-card {
-            width: 500px;
-            min-height: 385px; 
-            background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
-            border-radius: 20px; 
-            color: #fff;
-            padding: 25px;
-            box-sizing: border-box;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0, 31, 63, 0.25), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Giúp đẩy Footer và QR Code xuống dưới cùng */
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-bottom: 3px solid var(--secondary-color);
-            overflow: hidden;
-            transition: height 0.2s ease; /* Hiệu ứng kéo giãn mượt mà */
-        }
-
-        /* Hiệu ứng ánh sáng chéo (phản quang nhẹ) */
-        .e-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -50%;
-            width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            pointer-events: none;
-        }
-
-        /* STYLES MẶT TRƯỚC */
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 12px;
-            position: relative;
-            z-index: 2;
-        }
+        .card-preview-wrapper { width: 100%; max-width: 1040px; margin-bottom: 30px; }
+        .card-column { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
         
-        .card-header img {
-            width: 52px;
-            height: 52px;
-            background: #fff;
-            border-radius: 50%;
-            padding: 3px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        .card-label-title {
+            font-weight: 700; color: #888; margin-bottom: 12px;
+            text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
         }
 
-        .card-header-text {
-            text-align: center;
+        /* THIẾT KẾ THẺ ĐIỆN TỬ */
+        .e-card {
+            width: 100%; max-width: 500px; min-height: 385px; 
+            background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
+            border-radius: 20px; color: #fff; padding: 25px;
+            box-sizing: border-box; position: relative;
+            box-shadow: 0 20px 40px rgba(0, 31, 63, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            display: flex; flex-direction: column; justify-content: space-between; 
+            border: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 3px solid var(--secondary-color);
+            overflow: hidden; transition: height 0.2s ease;
         }
 
-        .card-header .company {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--secondary-light); 
-            letter-spacing: 0.5px;
+        .e-card::before {
+            content: ''; position: absolute; top: 0; left: -50%; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg); pointer-events: none;
         }
 
-        .card-header .branch {
-            font-size: 17px;
-            font-weight: 700;
-            color: #ffffff; 
-            margin-top: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
-        }
-
-        .card-title {
-            font-size: 17px;
-            text-align: center;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1); 
-            padding: 8px;
-            border-radius: 8px;
-            margin: 12px 0;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .card-info {
-            font-size: 14.5px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px; 
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-row {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .card-label {
-            width: 115px;
-            font-weight: 600;
-            color: var(--secondary-light);
-            font-size: 13px;
-            margin-top: 2px;
-        }
-
-        .card-value {
-            flex: 1;
-            word-break: break-word;
-            font-weight: 500;
-            line-height: 1.4;
-            color: #f8f9fa;
-        }
-
-        .qr-bottom-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-top: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-top: 12px;
-            margin-top: auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .qr-text-guide {
-            font-size: 13px;
-            color: #d1d8e0;
-            max-width: 200px;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        .qr-text-guide span {
-            color: var(--secondary-color);
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .qr-codes-wrapper {
-            display: flex;
-            gap: 15px;
-        }
-
-        .qr-item {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 6px 6px 4px 6px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--primary-dark);
-            font-size: 10px;
-            font-weight: 700;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-
-        .qr-code-box {
-            width: 58px;
-            height: 58px;
-            margin-bottom: 4px;
-        }
-
+        /* MẶT TRƯỚC */
+        .card-header { display: flex; align-items: center; justify-content: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; position: relative; z-index: 2; }
+        .card-header img { width: 45px; height: 45px; background: #fff; border-radius: 50%; padding: 3px; }
+        .card-header-text { text-align: center; }
+        .card-header .company { font-size: 13px; font-weight: 600; color: var(--secondary-light); }
+        .card-header .branch { font-size: 16px; font-weight: 700; color: #ffffff; margin-top: 4px; text-transform: uppercase; }
+        
+        .card-title { font-size: 16px; text-align: center; font-weight: 700; color: #fff; background: rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px; margin: 12px 0; border: 1px solid rgba(255,255,255,0.05); }
+        
+        .card-info { font-size: 14.5px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
+        .card-row { display: flex; align-items: flex-start; }
+        .card-label { width: 100px; font-weight: 600; color: var(--secondary-light); font-size: 13px; margin-top: 2px; flex-shrink: 0; }
+        .card-value { flex: 1; word-break: break-word; font-weight: 500; line-height: 1.4; color: #f8f9fa; }
+        
+        .qr-bottom-section { display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(255, 255, 255, 0.2); padding-top: 12px; margin-top: auto; position: relative; z-index: 2; }
+        .qr-text-guide { font-size: 12px; color: #d1d8e0; line-height: 1.5; }
+        .qr-text-guide span { color: var(--secondary-color); font-weight: 700; font-size: 13px; }
+        .qr-codes-wrapper { display: flex; gap: 10px; }
+        .qr-item { background: rgba(255, 255, 255, 0.95); padding: 5px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; color: var(--primary-dark); font-size: 9px; font-weight: 700; }
+        .qr-code-box { width: 50px; height: 50px; margin-bottom: 4px; }
         .qr-code-box canvas { display: none; }
         .qr-code-box img { display: block; width: 100%; height: 100%; }
 
-        /* STYLES MẶT SAU */
-        .back-title {
-            font-size: 15.5px;
-            font-weight: 700;
-            color: var(--secondary-light);
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            padding-bottom: 10px;
-            letter-spacing: 0.5px;
+        /* MẶT SAU */
+        .back-title { font-size: 15px; font-weight: 700; color: var(--secondary-light); text-align: center; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px; }
+        .back-deadline { background: linear-gradient(90deg, rgba(242,101,34,0) 0%, rgba(242,101,34,0.2) 50%, rgba(242,101,34,0) 100%); color: #fff; padding: 8px; border-radius: 8px; font-size: 12.5px; font-weight: 600; text-align: center; margin: 12px 0; }
+        
+        .payment-methods { font-size: 12.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 10px; color: #e8ecef; }
+        .payment-item { background: rgba(255, 255, 255, 0.05); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--secondary-light); transition: background 0.3s ease; }
+        .payment-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .payment-item strong { color: var(--secondary-light); font-size: 13px; display: block; margin-bottom: 4px; }
+        
+        .back-footer { border-top: 1px dashed rgba(255, 255, 255, 0.2); padding-top: 10px; font-size: 11px; text-align: center; color: #c5d0db; line-height: 1.6; margin-top: auto; }
+        .back-footer span { color: #fff; font-weight: 700; }
+
+        /* BUTTONS */
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; margin-bottom: 20px; width: 100%; }
+        .btn-download { background-color: #20c997; color: white; border: none; padding: 12px 20px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-family: inherit; flex: 1; min-width: 140px; max-width: 200px; }
+        .btn-download:hover { background-color: #1ba87e; transform: translateY(-2px); }
+        .btn-secondary { background-color: var(--primary-color); }
+        .btn-secondary:hover { background-color: var(--primary-dark); }
+        
+        /* TOAST THÔNG BÁO AUTO DOWNLOAD */
+        #toastMessage {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #f26522; color: #fff; padding: 12px 20px; border-radius: 8px;
+            font-weight: 600; font-size: 14px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1000; display: none; text-align: center; width: 90%; max-width: 350px;
         }
 
-        .back-deadline {
-            background: linear-gradient(90deg, rgba(242,101,34,0) 0%, rgba(242,101,34,0.2) 50%, rgba(242,101,34,0) 100%);
-            color: #fff;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            margin: 12px 0;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .payment-methods {
-            font-size: 12.5px;
-            line-height: 1.5;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            color: #e8ecef;
-        }
-
-        .payment-item {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px 12px;
-            border-radius: 8px;
-            border-left: 3px solid var(--secondary-light);
-            transition: background 0.3s ease;
-        }
-
-        .payment-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .payment-item strong {
-            color: var(--secondary-light);
-            font-size: 13px;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .back-footer {
-            border-top: 1px dashed rgba(255, 255, 255, 0.2);
-            padding-top: 10px;
-            font-size: 12px;
-            text-align: center;
-            color: #c5d0db;
-            line-height: 1.6;
-            margin-top: auto;
-        }
-
-        .back-footer span {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        /* NÚT TẢI */
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 10px;
-            margin-bottom: 40px;
-        }
-
-        .btn-download {
-            background-color: #20c997;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3);
-        }
-
-        .btn-download:hover {
-            background-color: #1ba87e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4);
-        }
-
-        .btn-secondary {
-            background-color: var(--primary-color);
-            box-shadow: 0 4px 15px rgba(0, 85, 164, 0.3);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--primary-dark);
-            box-shadow: 0 6px 20px rgba(0, 85, 164, 0.4);
+        /* MEDIA QUERIES CHO ĐIỆN THOẠI */
+        @media (max-width: 768px) {
+            .top-section { flex-direction: column; gap: 15px; }
+            .e-card { padding: 20px 15px; min-height: auto; }
+            .card-header .branch { font-size: 15px; }
+            .card-title { font-size: 14.5px; }
+            .card-label { width: 85px; font-size: 12px; }
+            .card-value { font-size: 13.5px; }
+            .qr-code-box { width: 45px; height: 45px; }
+            .back-title { font-size: 14px; }
+            .payment-methods { font-size: 11.5px; }
+            .payment-item strong { font-size: 12px; }
+            .btn-download { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <h2>Tạo Thẻ Khách Hàng Điện Tử</h2>
+    <div id="toastMessage">Đang tự động tải thẻ về máy của bạn...</div>
 
-    <!-- KHU VỰC NHẬP THÔNG TIN -->
-    <div class="container">
-        <div class="form-group">
-            <label for="inputMaKH">Mã Khách Hàng:</label>
-            <input type="text" id="inputMaKH" placeholder="Nhập mã khách hàng (VD: PB01010012345)" oninput="updateCard()">
+    <h2 id="mainTitle">Tạo Thẻ Khách Hàng Điện Tử</h2>
+
+    <!-- KHU VỰC TRÊN CÙNG: FORM & CHIA SẺ QR -->
+    <div class="top-section" id="topSection">
+        <div id="inputContainer" class="container">
+            <div class="form-group">
+                <label>Mã Khách Hàng:</label>
+                <input type="text" id="inputMaKH" placeholder="Nhập mã khách hàng (VD: PB01010012345)" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+                <label>Họ và Tên Khách Hàng:</label>
+                <input type="text" id="inputTenKH" placeholder="Nhập họ và tên khách hàng" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+                <label>Địa Chỉ:</label>
+                <input type="text" id="inputDiaChi" placeholder="Nhập địa chỉ" oninput="updateCard()">
+            </div>
+            <div class="form-group">
+                <label>Số Điện Thoại:</label>
+                <input type="text" id="inputDienThoai" placeholder="Nhập số điện thoại" oninput="updateCard()">
+            </div>
         </div>
-        <div class="form-group">
-            <label for="inputTenKH">Họ và Tên Khách Hàng:</label>
-            <input type="text" id="inputTenKH" placeholder="Nhập họ và tên khách hàng" oninput="updateCard()">
-        </div>
-        <div class="form-group">
-            <label for="inputDiaChi">Địa Chỉ:</label>
-            <input type="text" id="inputDiaChi" placeholder="Nhập địa chỉ" oninput="updateCard()">
-        </div>
-        <div class="form-group">
-            <label for="inputDienThoai">Số Điện Thoại:</label>
-            <input type="text" id="inputDienThoai" placeholder="Nhập số điện thoại" oninput="updateCard()">
+
+        <div class="share-section" id="shareSection">
+            <h3>📲 YÊU CẦU KHÁCH HÀNG QUÉT MÃ NÀY</h3>
+            <p>Khách hàng quét mã này bằng Zalo/Camera, trình duyệt web sẽ tự động mở và tải thẻ về điện thoại của họ.</p>
+            <div id="qrCustomerShare"></div>
+            <p style="font-size: 11px; margin-bottom:0; color:#888;">*Tự động lấy link hiện tại trên GitHub Pages</p>
         </div>
     </div>
 
     <!-- KHU VỰC THẺ VÀ NÚT TẢI -->
     <div class="card-preview-wrapper">
-        <!-- MẶT TRƯỚC -->
-        <div class="card-column">
-            <div class="card-label-title">Mặt Trước</div>
-            <div id="eCardFront" class="e-card">
-                <div class="card-header">
-                    <img src="icon-512.png.png" alt="Logo EVN">
-                    <div class="card-header-text">
-                        <div class="company">CÔNG TY ĐIỆN LỰC AN GIANG</div>
-                        <div class="branch">ĐIỆN LỰC RẠCH GIÁ</div>
-                    </div>
-                </div>
-                
-                <div class="card-title">THẺ THÔNG TIN KHÁCH HÀNG</div>
-                
-                <div class="card-info">
-                    <div class="card-row">
-                        <span class="card-label">MÃ KH:</span>
-                        <span id="cardMaKH" class="card-value">---</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">HỌ VÀ TÊN:</span>
-                        <span id="cardTenKH" class="card-value">---</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">ĐỊA CHỈ:</span>
-                        <span id="cardDiaChi" class="card-value">---</span>
-                    </div>
-                    <div class="card-row">
-                        <span class="card-label">ĐIỆN THOẠI:</span>
-                        <span id="cardDienThoai" class="card-value">---</span>
-                    </div>
-                </div>
-
-                <div class="qr-bottom-section">
-                    <div class="qr-text-guide">
-                        Quét mã QR để tải<br><span>App CSKH EVN</span>
-                    </div>
-                    <div class="qr-codes-wrapper">
-                        <div class="qr-item">
-                            <div id="qrAndroid" class="qr-code-box"></div>
-                            <span>ANDROID</span>
+        <div id="combinedCardsWrapper">
+            <!-- MẶT TRƯỚC -->
+            <div class="card-column">
+                <div class="card-label-title" id="labelFront">Mặt Trước</div>
+                <div id="eCardFront" class="e-card">
+                    <div class="card-header">
+                        <img src="icon-512.png.png" alt="Logo" onerror="this.style.display='none'">
+                        <div class="card-header-text">
+                            <div class="company">CÔNG TY ĐIỆN LỰC AN GIANG</div>
+                            <div class="branch">ĐIỆN LỰC RẠCH GIÁ</div>
                         </div>
-                        <div class="qr-item">
-                            <div id="qrIOS" class="qr-code-box"></div>
-                            <span>IOS</span>
+                    </div>
+                    <div class="card-title">THẺ THÔNG TIN KHÁCH HÀNG</div>
+                    <div class="card-info">
+                        <div class="card-row"><span class="card-label">MÃ KH:</span><span id="cardMaKH" class="card-value">---</span></div>
+                        <div class="card-row"><span class="card-label">HỌ VÀ TÊN:</span><span id="cardTenKH" class="card-value">---</span></div>
+                        <div class="card-row"><span class="card-label">ĐỊA CHỈ:</span><span id="cardDiaChi" class="card-value">---</span></div>
+                        <div class="card-row"><span class="card-label">ĐIỆN THOẠI:</span><span id="cardDienThoai" class="card-value">---</span></div>
+                    </div>
+                    <div class="qr-bottom-section">
+                        <div class="qr-text-guide">Quét mã QR để tải<br><span>App CSKH EVN</span></div>
+                        <div class="qr-codes-wrapper">
+                            <div class="qr-item"><div id="qrAndroid" class="qr-code-box"></div><span>ANDROID</span></div>
+                            <div class="qr-item"><div id="qrIOS" class="qr-code-box"></div><span>IOS</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- MẶT SAU -->
-        <div class="card-column">
-            <div class="card-label-title">Mặt Sau</div>
-            <div id="eCardBack" class="e-card">
-                <div class="back-title">HƯỚNG DẪN THANH TOÁN TIỀN ĐIỆN</div>
-
-                <div class="back-deadline">
-                    ⏱ THỜI HẠN THANH TOÁN: TRƯỚC NGÀY 05 (HÀNG THÁNG)
-                </div>
-
-                <div class="payment-methods">
-                    <div class="payment-item">
-                        <strong>1. Trích nợ / Thanh toán tự động:</strong>
-                        Đăng ký qua ngân hàng hoặc app di động để tự động trừ tiền điện mỗi tháng — Không cần nhớ ngày, không lo trễ hạn.
+            <!-- MẶT SAU (NỘI DUNG ĐƯỢC GIỮ NGUYÊN BẢN) -->
+            <div class="card-column">
+                <div class="card-label-title" id="labelBack">Mặt Sau</div>
+                <div id="eCardBack" class="e-card">
+                    <div class="back-title">HƯỚNG DẪN THANH TOÁN TIỀN ĐIỆN</div>
+                    <div class="back-deadline">⏱ THỜI HẠN THANH TOÁN: TRƯỚC NGÀY 05 (HÀNG THÁNG)</div>
+                    <div class="payment-methods">
+                        <div class="payment-item">
+                            <strong>1. Trích nợ / Thanh toán tự động:</strong>
+                            Đăng ký qua ngân hàng hoặc app di động để tự động trừ tiền điện mỗi tháng — Không cần nhớ ngày, không lo trễ hạn.
+                        </div>
+                        <div class="payment-item">
+                            <strong>2. Ứng dụng di động:</strong>
+                            App CSKH EVNSPC/EVN; Ví điện tử (MoMo, ZaloPay, VNPay, Viettel Money...); Ngân hàng số.
+                        </div>
+                        <div class="payment-item">
+                            <strong>3. Điểm thu cố định:</strong>
+                            Thanh toán trực tiếp tại điểm giao dịch ngân hàng, cửa hàng tiện lợi, siêu thị, hoặc đại lý thu hộ.
+                        </div>
                     </div>
-                    <div class="payment-item">
-                        <strong>2. Ứng dụng di động:</strong>
-                        App CSKH EVNSPC/EVN; Ví điện tử (MoMo, ZaloPay, VNPay, Viettel Money...); Ngân hàng số.
+                    <div class="back-footer">
+                        📞 Tổng đài EVNSPC: <span>19009000 - 19001006</span><br>
+                        🌐 Website: <span>http://cskh.evnspc.vn</span>
                     </div>
-                    <div class="payment-item">
-                        <strong>3. Điểm thu cố định:</strong>
-                        Thanh toán trực tiếp tại điểm giao dịch ngân hàng, cửa hàng tiện lợi, siêu thị, hoặc đại lý thu hộ.
-                    </div>
-                </div>
-
-                <div class="back-footer">
-                    📞 Tổng đài EVNSPC: <span>19009000 - 19001006</span><br>
-                    🌐 Website: <span>http://cskh.evnspc.vn</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NÚT TẢI HÌNH ÂNH -->
-    <div class="btn-group">
+    <!-- NÚT TẢI HÌNH ẢNH -->
+    <div class="btn-group" id="downloadButtons">
         <button class="btn-download" onclick="downloadSingleCard('eCardFront', 'The_Khach_Hang_Mat_Truoc.png')">Tải Mặt Trước</button>
         <button class="btn-download" onclick="downloadSingleCard('eCardBack', 'The_Khach_Hang_Mat_Sau.png')">Tải Mặt Sau</button>
-        <button class="btn-download btn-secondary" onclick="downloadBothCards()">Tải Cả 2 Mặt</button>
+        <button class="btn-download btn-secondary" onclick="downloadCombinedCards()">Gộp 2 Mặt & Tải Về</button>
     </div>
 
     <script>
-        // Cập nhật text realtime từ ô nhập lên thẻ
-        function updateCard() {
-            const maKH = document.getElementById('inputMaKH').value;
-            const tenKH = document.getElementById('inputTenKH').value;
-            const diaChi = document.getElementById('inputDiaChi').value;
-            const dienThoai = document.getElementById('inputDienThoai').value;
+        let shareQRInstance = null;
+        let qrTimeout = null; // Biến dùng để kiểm soát độ trễ (debounce) của mã QR
 
+        function removeAccents(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+        }
+
+        // Cập nhật thẻ hiển thị ngay lập tức, nhưng trì hoãn việc tạo QR chia sẻ
+        function updateCard() {
+            const maKH = document.getElementById('inputMaKH').value.trim();
+            const tenKH = document.getElementById('inputTenKH').value.trim();
+            const diaChi = document.getElementById('inputDiaChi').value.trim();
+            const dienThoai = document.getElementById('inputDienThoai').value.trim();
+
+            // 1. Cập nhật chữ trên thẻ (tức thì để không bị sượng)
             document.getElementById('cardMaKH').innerText = maKH ? maKH.toUpperCase() : '---';
             document.getElementById('cardTenKH').innerText = tenKH ? tenKH.toUpperCase() : '---';
             document.getElementById('cardDiaChi').innerText = diaChi ? diaChi : '---';
             document.getElementById('cardDienThoai').innerText = dienThoai ? dienThoai : '---';
 
-            // --- ĐỒNG BỘ CHIỀU CAO 2 THẺ ---
-            const frontCard = document.getElementById('eCardFront');
-            const backCard = document.getElementById('eCardBack');
+            if (window.innerWidth > 768) {
+                const frontCard = document.getElementById('eCardFront');
+                const backCard = document.getElementById('eCardBack');
+                frontCard.style.height = 'auto'; backCard.style.height = 'auto';
+                const maxHeight = Math.max(frontCard.offsetHeight, backCard.offsetHeight, 385);
+                frontCard.style.height = maxHeight + 'px'; backCard.style.height = maxHeight + 'px';
+            }
 
-            // 1. Reset chiều cao về auto để form có thể "co lại" nếu người dùng xóa bớt chữ
-            frontCard.style.height = 'auto';
-            backCard.style.height = 'auto';
-
-            // 2. Lấy kích thước thực tế của thẻ sau khi text vừa nhảy dòng
-            const frontHeight = frontCard.offsetHeight;
-            const backHeight = backCard.offsetHeight;
-            
-            // 3. Tìm kích thước cao nhất giữa 2 thẻ, mức tối thiểu luôn là 385px
-            const maxHeight = Math.max(frontHeight, backHeight, 385);
-
-            // 4. Ép 2 thẻ hiển thị chung một chiều cao lớn nhất
-            frontCard.style.height = maxHeight + 'px';
-            backCard.style.height = maxHeight + 'px';
+            // 2. Kỹ thuật Debounce: Trì hoãn việc tạo mã QR 0.8s sau khi ngừng gõ
+            clearTimeout(qrTimeout);
+            qrTimeout = setTimeout(() => {
+                generateShareURL(maKH, tenKH, diaChi, dienThoai);
+            }, 800);
         }
 
-        // Khởi tạo mã QR trực tiếp thành thẻ <img> ngay khi tải trang
-        window.onload = function() {
-            new QRCode(document.getElementById("qrAndroid"), {
-                text: "https://play.google.com/store/apps/details?id=com.evn.cskh.vn",
-                width: 58,
-                height: 58,
-                colorDark : "#003366", 
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.L
-            });
+        function generateShareURL(maKH, tenKH, diaChi, dienThoai) {
+            const shareSection = document.getElementById('shareSection');
+            
+            if(!maKH && !tenKH) {
+                shareSection.style.display = 'none';
+                return;
+            }
+            shareSection.style.display = 'flex'; 
 
-            new QRCode(document.getElementById("qrIOS"), {
-                text: "https://apps.apple.com/vn/app/evn-cskh/id6754793134",
-                width: 58,
-                height: 58,
-                colorDark : "#003366",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.L
-            });
+            const baseUrl = window.location.href.split('?')[0];
+            const params = new URLSearchParams({ maKH, tenKH, diaChi, dienThoai });
+            const shareUrl = baseUrl + "?" + params.toString();
 
-            // Chạy cập nhật một lần lúc web vừa load để chốt khung
-            setTimeout(updateCard, 100);
-        };
+            if (!shareQRInstance) {
+                shareQRInstance = new QRCode(document.getElementById("qrCustomerShare"), {
+                    text: shareUrl, width: 170, height: 170,
+                    colorDark : "#0055a4", colorLight : "#ffffff"
+                });
+            } else {
+                shareQRInstance.clear();
+                shareQRInstance.makeCode(shareUrl);
+            }
+        }
 
-        // Hàm tải ảnh
         function downloadSingleCard(elementId, fileName) {
             const cardElement = document.getElementById(elementId);
-            
-            html2canvas(cardElement, {
-                scale: 4, 
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: null, 
-                logging: false 
-            }).then(canvas => {
+            html2canvas(cardElement, { scale: 3, useCORS: true, backgroundColor: null, logging: false })
+            .then(canvas => {
+                const link = document.createElement('a');
+                link.download = fileName; link.href = canvas.toDataURL('image/png'); link.click();
+            });
+        }
+
+        function downloadCombinedCards() {
+            const wrapper = document.getElementById('combinedCardsWrapper');
+            document.getElementById('labelFront').style.display = 'none';
+            document.getElementById('labelBack').style.display = 'none';
+
+            let fileName = 'The_Khach_Hang_Full.png';
+            const tenKHTemp = document.getElementById('inputTenKH').value.trim();
+            if(tenKHTemp) fileName = 'The_KH_' + removeAccents(tenKHTemp).replace(/\s+/g, '_') + '.png';
+
+            html2canvas(wrapper, { scale: 3, useCORS: true, backgroundColor: '#eef2f5' })
+            .then(canvas => {
+                document.getElementById('labelFront').style.display = 'block';
+                document.getElementById('labelBack').style.display = 'block';
+
                 const link = document.createElement('a');
                 link.download = fileName;
-                link.href = canvas.toDataURL('image/png'); 
+                link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
-        function downloadBothCards() {
-            downloadSingleCard('eCardFront', 'The_Khach_Hang_Mat_Truoc.png');
-            setTimeout(() => {
-                downloadSingleCard('eCardBack', 'The_Khach_Hang_Mat_Sau.png');
-            }, 600);
-        }
-    </script>
+        window.onload = function() {
+            new QRCode(document.getElementById("qrAndroid"), { text: "https://play.google.com/store/apps/details?id=com.evn.cskh.vn", width: 50, height: 50, colorDark : "#003366" });
+            new QRCode(document.getElementById("qrIOS"), { text: "https://apps.apple.com/vn/app/evn-cskh/id6754793134", width: 50, height: 50, colorDark : "#003366" });
 
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if(urlParams.has('maKH') || urlParams.has('tenKH')) {
+                document.getElementById('inputMaKH').value = urlParams.get('maKH') || '';
+                document.getElementById('inputTenKH').value = urlParams.get('tenKH') || '';
+                document.getElementById('inputDiaChi').value = urlParams.get('diaChi') || '';
+                document.getElementById('inputDienThoai').value = urlParams.get('dienThoai') || '';
+                
+                updateCard();
+
+                document.getElementById('topSection').style.display = 'none';
+                document.getElementById('mainTitle').innerText = "Thẻ Điện Tử Của Bạn";
+
+                const toast = document.getElementById('toastMessage');
+                toast.style.display = 'block';
+                
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    downloadCombinedCards();
+                }, 1500);
+
+            } else {
+                setTimeout(updateCard, 100);
+            }
+        };
+
+        window.addEventListener('resize', () => {
+            if(!document.getElementById('topSection').style.display || document.getElementById('topSection').style.display !== 'none') {
+                 updateCard();
+            }
+        });
+    </script>
 </body>
 </html>
