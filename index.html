@@ -21,6 +21,14 @@
             --secondary-color: #f26522;
             --secondary-light: #ff8547;
             --bg-color: #eef2f5;
+            
+            /* Biến mặc định cho kiểu thẻ 1 (Gradient hiện đại) */
+            --card-bg: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --card-text: #ffffff;
+            --card-subtext: #d1d8e0;
+            --card-box-bg: rgba(255, 255, 255, 0.1);
+            --item-bg: rgba(255, 255, 255, 0.05);
         }
 
         body {
@@ -73,7 +81,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             text-align: center; 
             border: 2px dashed var(--primary-color);
-            display: none; /* JS sẽ đổi thành flex */
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -89,11 +97,65 @@
         }
         input[type="text"]:focus { border-color: var(--primary-color); background-color: #fff; outline: none; }
 
+        /* THANH TÙY CHỈNH MÀU SẮC & KIỂU THẺ */
+        .customizer-bar {
+            width: 100%;
+            max-width: 1000px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .customizer-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .color-btn:hover { transform: scale(1.15); }
+        .color-btn.active { transform: scale(1.2); outline: 2px solid #333; }
+
+        select.custom-select {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1.5px solid #e1e5ea;
+            font-family: inherit;
+            font-size: 14px;
+            background: #f9fbfc;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        select.custom-select:focus { outline: none; border-color: var(--primary-color); }
+
         .share-section h3 { color: var(--primary-dark); font-size: 16px; margin-top: 0; margin-bottom: 10px; }
         .share-section p { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.5; }
         #qrCustomerShare { display: flex; justify-content: center; margin-bottom: 15px; background: white; padding: 10px; border-radius: 10px; }
 
-        /* BỌC 2 THẺ ĐỂ RENDER CHUNG KHI AUTO DOWNLOAD */
         #combinedCardsWrapper {
             display: flex;
             gap: 25px;
@@ -111,58 +173,51 @@
             text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
         }
 
-        /* THIẾT KẾ THẺ ĐIỆN TỬ */
+        /* THIẾT KẾ THẺ ĐIỆN TỬ DÙNG CHUNG BIẾN CSS */
         .e-card {
             width: 100%; max-width: 500px; min-height: 385px; 
-            background: linear-gradient(145deg, rgba(0, 85, 164, 0.95) 0%, rgba(0, 31, 63, 0.98) 100%);
-            border-radius: 20px; color: #fff; padding: 25px;
+            background: var(--card-bg);
+            border-radius: 20px; color: var(--card-text); padding: 25px;
             box-sizing: border-box; position: relative;
-            box-shadow: 0 20px 40px rgba(0, 31, 63, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 31, 63, 0.15);
             display: flex; flex-direction: column; justify-content: space-between; 
-            border: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 3px solid var(--secondary-color);
-            overflow: hidden; transition: height 0.2s ease;
-        }
-
-        .e-card::before {
-            content: ''; position: absolute; top: 0; left: -50%; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg); pointer-events: none;
+            border: 1px solid var(--card-border); border-bottom: 4px solid var(--secondary-color);
+            overflow: hidden; transition: all 0.3s ease;
         }
 
         /* MẶT TRƯỚC */
-        .card-header { display: flex; align-items: center; justify-content: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; position: relative; z-index: 2; }
-        .card-header img { width: 45px; height: 45px; background: #fff; border-radius: 50%; padding: 3px; }
+        .card-header { display: flex; align-items: center; justify-content: center; gap: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; position: relative; z-index: 2; }
+        .card-header img { width: 45px; height: 45px; background: #fff; border-radius: 50%; padding: 3px; object-fit: contain; }
         .card-header-text { text-align: center; }
         .card-header .company { font-size: 13px; font-weight: 600; color: var(--secondary-light); }
-        .card-header .branch { font-size: 16px; font-weight: 700; color: #ffffff; margin-top: 4px; text-transform: uppercase; }
+        .card-header .branch { font-size: 16px; font-weight: 700; color: inherit; margin-top: 4px; text-transform: uppercase; }
         
-        .card-title { font-size: 16px; text-align: center; font-weight: 700; color: #fff; background: rgba(255, 255, 255, 0.1); padding: 8px; border-radius: 8px; margin: 12px 0; border: 1px solid rgba(255,255,255,0.05); }
+        .card-title { font-size: 16px; text-align: center; font-weight: 700; color: inherit; background: var(--card-box-bg); padding: 8px; border-radius: 8px; margin: 12px 0; border: 1px solid var(--card-border); }
         
         .card-info { font-size: 14.5px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; position: relative; z-index: 2; }
         .card-row { display: flex; align-items: flex-start; }
         .card-label { width: 100px; font-weight: 600; color: var(--secondary-light); font-size: 13px; margin-top: 2px; flex-shrink: 0; }
-        .card-value { flex: 1; word-break: break-word; font-weight: 500; line-height: 1.4; color: #f8f9fa; }
+        .card-value { flex: 1; word-break: break-word; font-weight: 500; line-height: 1.4; color: inherit; }
         
-        .qr-bottom-section { display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed rgba(255, 255, 255, 0.2); padding-top: 12px; margin-top: auto; position: relative; z-index: 2; }
-        .qr-text-guide { font-size: 12px; color: #d1d8e0; line-height: 1.5; }
+        .qr-bottom-section { display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed var(--card-border); padding-top: 12px; margin-top: auto; position: relative; z-index: 2; }
+        .qr-text-guide { font-size: 12px; color: var(--card-subtext); line-height: 1.5; }
         .qr-text-guide span { color: var(--secondary-color); font-weight: 700; font-size: 13px; }
         .qr-codes-wrapper { display: flex; gap: 10px; }
-        .qr-item { background: rgba(255, 255, 255, 0.95); padding: 5px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; color: var(--primary-dark); font-size: 9px; font-weight: 700; }
+        .qr-item { background: rgba(255, 255, 255, 0.95); padding: 5px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; color: #003366; font-size: 9px; font-weight: 700; }
         .qr-code-box { width: 50px; height: 50px; margin-bottom: 4px; }
         .qr-code-box canvas { display: none; }
         .qr-code-box img { display: block; width: 100%; height: 100%; }
 
         /* MẶT SAU */
-        .back-title { font-size: 15px; font-weight: 700; color: var(--secondary-light); text-align: center; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 10px; }
-        .back-deadline { background: linear-gradient(90deg, rgba(242,101,34,0) 0%, rgba(242,101,34,0.2) 50%, rgba(242,101,34,0) 100%); color: #fff; padding: 8px; border-radius: 8px; font-size: 12.5px; font-weight: 600; text-align: center; margin: 12px 0; }
+        .back-title { font-size: 15px; font-weight: 700; color: var(--secondary-light); text-align: center; text-transform: uppercase; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; }
+        .back-deadline { background: rgba(242,101,34,0.15); color: inherit; padding: 8px; border-radius: 8px; font-size: 12.5px; font-weight: 600; text-align: center; margin: 12px 0; border: 1px solid var(--card-border); }
         
-        .payment-methods { font-size: 12.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 10px; color: #e8ecef; }
-        .payment-item { background: rgba(255, 255, 255, 0.05); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--secondary-light); transition: background 0.3s ease; }
-        .payment-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .payment-methods { font-size: 12.5px; line-height: 1.5; display: flex; flex-direction: column; gap: 10px; }
+        .payment-item { background: var(--item-bg); padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--secondary-light); transition: background 0.3s ease; }
         .payment-item strong { color: var(--secondary-light); font-size: 13px; display: block; margin-bottom: 4px; }
         
-        .back-footer { border-top: 1px dashed rgba(255, 255, 255, 0.2); padding-top: 10px; font-size: 11px; text-align: center; color: #c5d0db; line-height: 1.6; margin-top: auto; }
-        .back-footer span { color: #fff; font-weight: 700; }
+        .back-footer { border-top: 1px dashed var(--card-border); padding-top: 10px; font-size: 11px; text-align: center; color: var(--card-subtext); line-height: 1.6; margin-top: auto; }
+        .back-footer span { color: inherit; font-weight: 700; }
 
         /* BUTTONS */
         .btn-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; margin-bottom: 20px; width: 100%; }
@@ -171,7 +226,6 @@
         .btn-secondary { background-color: var(--primary-color); }
         .btn-secondary:hover { background-color: var(--primary-dark); }
         
-        /* TOAST THÔNG BÁO AUTO DOWNLOAD */
         #toastMessage {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: #f26522; color: #fff; padding: 12px 20px; border-radius: 8px;
@@ -179,18 +233,9 @@
             z-index: 1000; display: none; text-align: center; width: 90%; max-width: 350px;
         }
 
-        /* MEDIA QUERIES CHO ĐIỆN THOẠI */
         @media (max-width: 768px) {
-            .top-section { flex-direction: column; gap: 15px; }
+            .top-section, .customizer-bar { flex-direction: column; gap: 15px; }
             .e-card { padding: 20px 15px; min-height: auto; }
-            .card-header .branch { font-size: 15px; }
-            .card-title { font-size: 14.5px; }
-            .card-label { width: 85px; font-size: 12px; }
-            .card-value { font-size: 13.5px; }
-            .qr-code-box { width: 45px; height: 45px; }
-            .back-title { font-size: 14px; }
-            .payment-methods { font-size: 11.5px; }
-            .payment-item strong { font-size: 12px; }
             .btn-download { max-width: 100%; }
         }
     </style>
@@ -200,6 +245,29 @@
     <div id="toastMessage">Đang tự động tải thẻ về máy của bạn...</div>
 
     <h2 id="mainTitle">Tạo Thẻ Khách Hàng Điện Tử</h2>
+
+    <!-- THANH TÙY CHỈNH MÀU SẮC & KIỂU THẺ -->
+    <div class="customizer-bar" id="customizerBar">
+        <div class="customizer-group">
+            <label>Chọn Tông Màu Chủ Đạo:</label>
+            <div class="color-palette">
+                <div class="color-btn active" style="background: #0055a4;" onclick="changeThemeColor('blue', '#0055a4', '#003366', '#ff8547')" title="Xanh Dương"></div>
+                <div class="color-btn" style="background: #198754;" onclick="changeThemeColor('green', '#198754', '#0f5132', '#75b798')" title="Xanh Lá"></div>
+                <div class="color-btn" style="background: #fd7e14;" onclick="changeThemeColor('orange', '#fd7e14', '#b85404', '#ffc107')" title="Cam"></div>
+                <div class="color-btn" style="background: #ffc107;" onclick="changeThemeColor('yellow', '#ffc107', '#b38600', '#fd7e14')" title="Vàng"></div>
+                <div class="color-btn" style="background: #dc3545;" onclick="changeThemeColor('red', '#dc3545', '#842029', '#ff6b6b')" title="Đỏ"></div>
+            </div>
+        </div>
+
+        <div class="customizer-group">
+            <label for="cardStyleSelect">Chọn Kiểu Thẻ (Style):</label>
+            <select id="cardStyleSelect" class="custom-select" onchange="changeCardStyle(this.value)">
+                <option value="gradient">Kiểu 1: Gradient Hiện Đại</option>
+                <option value="flat">Kiểu 2: Phẳng Tối Giản (Modern Clean)</option>
+                <option value="dark">Kiểu 3: Sang Trọng (Dark Luxury)</option>
+            </select>
+        </div>
+    </div>
 
     <!-- KHU VỰC TRÊN CÙNG: FORM & CHIA SẺ QR -->
     <div class="top-section" id="topSection">
@@ -238,7 +306,7 @@
                 <div class="card-label-title" id="labelFront">Mặt Trước</div>
                 <div id="eCardFront" class="e-card">
                     <div class="card-header">
-                        <img src="icon-512.png.png" alt="Logo" onerror="this.style.display='none'">
+                        <img src="icon-512.png.png" alt="Logo" crossorigin="anonymous" onerror="this.style.display='none'">
                         <div class="card-header-text">
                             <div class="company">CÔNG TY ĐIỆN LỰC AN GIANG</div>
                             <div class="branch">ĐIỆN LỰC RẠCH GIÁ</div>
@@ -261,7 +329,7 @@
                 </div>
             </div>
 
-            <!-- MẶT SAU (NỘI DUNG ĐƯỢC GIỮ NGUYÊN BẢN) -->
+            <!-- MẶT SAU -->
             <div class="card-column">
                 <div class="card-label-title" id="labelBack">Mặt Sau</div>
                 <div id="eCardBack" class="e-card">
@@ -290,7 +358,7 @@
         </div>
     </div>
 
-    <!-- NÚT TẢI HÌNH ẢNH -->
+    <!-- NÚT TẢI HÌNH ẢNH ĐÃ ĐƯỢC KHẮC PHỤC -->
     <div class="btn-group" id="downloadButtons">
         <button class="btn-download" onclick="downloadSingleCard('eCardFront', 'The_Khach_Hang_Mat_Truoc.png')">Tải Mặt Trước</button>
         <button class="btn-download" onclick="downloadSingleCard('eCardBack', 'The_Khach_Hang_Mat_Sau.png')">Tải Mặt Sau</button>
@@ -299,20 +367,73 @@
 
     <script>
         let shareQRInstance = null;
-        let qrTimeout = null; // Biến dùng để kiểm soát độ trễ (debounce) của mã QR
+        let qrTimeout = null;
+        let currentBaseColor = '#0055a4';
+        let currentDarkColor = '#003366';
+        let currentAccentColor = '#ff8547';
+        let currentCardStyle = 'gradient';
 
         function removeAccents(str) {
             return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
         }
 
-        // Cập nhật thẻ hiển thị ngay lập tức, nhưng trì hoãn việc tạo QR chia sẻ
+        // Đổi màu chủ đạo
+        function changeThemeColor(type, primary, dark, accent) {
+            currentBaseColor = primary;
+            currentDarkColor = dark;
+            currentAccentColor = accent;
+
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.documentElement.style.setProperty('--primary-color', primary);
+            document.documentElement.style.setProperty('--primary-dark', dark);
+            document.documentElement.style.setProperty('--secondary-light', accent);
+
+            applyCardStyleTheme();
+        }
+
+        // Đổi kiểu thẻ
+        function changeCardStyle(style) {
+            currentCardStyle = style;
+            applyCardStyleTheme();
+        }
+
+        // Cập nhật giao diện thẻ dựa trên Màu & Kiểu thẻ đã chọn
+        function applyCardStyleTheme() {
+            let rootBg = '';
+            let border = 'rgba(255, 255, 255, 0.15)';
+            let text = '#ffffff';
+            let subtext = '#d1d8e0';
+            let boxBg = 'rgba(255, 255, 255, 0.1)';
+            let itemBg = 'rgba(255, 255, 255, 0.05)';
+
+            if (currentCardStyle === 'gradient') {
+                rootBg = `linear-gradient(145deg, ${currentBaseColor}EE 0%, ${currentDarkColor}FA 100%)`;
+            } else if (currentCardStyle === 'flat') {
+                rootBg = currentBaseColor;
+                border = 'rgba(255, 255, 255, 0.25)';
+            } else if (currentCardStyle === 'dark') {
+                rootBg = '#121619';
+                border = currentBaseColor + '55';
+                boxBg = 'rgba(255, 255, 255, 0.04)';
+                itemBg = 'rgba(255, 255, 255, 0.03)';
+            }
+
+            document.documentElement.style.setProperty('--card-bg', rootBg);
+            document.documentElement.style.setProperty('--card-border', border);
+            document.documentElement.style.setProperty('--card-text', text);
+            document.documentElement.style.setProperty('--card-subtext', subtext);
+            document.documentElement.style.setProperty('--card-box-bg', boxBg);
+            document.documentElement.style.setProperty('--item-bg', itemBg);
+        }
+
         function updateCard() {
             const maKH = document.getElementById('inputMaKH').value.trim();
             const tenKH = document.getElementById('inputTenKH').value.trim();
             const diaChi = document.getElementById('inputDiaChi').value.trim();
             const dienThoai = document.getElementById('inputDienThoai').value.trim();
 
-            // 1. Cập nhật chữ trên thẻ (tức thì để không bị sượng)
             document.getElementById('cardMaKH').innerText = maKH ? maKH.toUpperCase() : '---';
             document.getElementById('cardTenKH').innerText = tenKH ? tenKH.toUpperCase() : '---';
             document.getElementById('cardDiaChi').innerText = diaChi ? diaChi : '---';
@@ -326,7 +447,6 @@
                 frontCard.style.height = maxHeight + 'px'; backCard.style.height = maxHeight + 'px';
             }
 
-            // 2. Kỹ thuật Debounce: Trì hoãn việc tạo mã QR 0.8s sau khi ngừng gõ
             clearTimeout(qrTimeout);
             qrTimeout = setTimeout(() => {
                 generateShareURL(maKH, tenKH, diaChi, dienThoai);
@@ -349,7 +469,7 @@
             if (!shareQRInstance) {
                 shareQRInstance = new QRCode(document.getElementById("qrCustomerShare"), {
                     text: shareUrl, width: 170, height: 170,
-                    colorDark : "#0055a4", colorLight : "#ffffff"
+                    colorDark : currentBaseColor, colorLight : "#ffffff"
                 });
             } else {
                 shareQRInstance.clear();
@@ -357,15 +477,28 @@
             }
         }
 
+        // Hàm tải đơn lẻ đã tối ưu config để tránh lỗi không phản hồi
         function downloadSingleCard(elementId, fileName) {
             const cardElement = document.getElementById(elementId);
-            html2canvas(cardElement, { scale: 3, useCORS: true, backgroundColor: null, logging: false })
-            .then(canvas => {
+            
+            html2canvas(cardElement, { 
+                scale: 3, 
+                useCORS: true, 
+                allowTaint: true,
+                backgroundColor: null, 
+                logging: false 
+            }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = fileName; link.href = canvas.toDataURL('image/png'); link.click();
+                link.download = fileName; 
+                link.href = canvas.toDataURL('image/png'); 
+                link.click();
+            }).catch(err => {
+                console.error("Lỗi khi tải ảnh:", err);
+                alert("Có lỗi xảy ra khi tạo ảnh. Vui lòng thử lại!");
             });
         }
 
+        // Hàm tải gộp 2 mặt đã tối ưu config
         function downloadCombinedCards() {
             const wrapper = document.getElementById('combinedCardsWrapper');
             document.getElementById('labelFront').style.display = 'none';
@@ -375,8 +508,13 @@
             const tenKHTemp = document.getElementById('inputTenKH').value.trim();
             if(tenKHTemp) fileName = 'The_KH_' + removeAccents(tenKHTemp).replace(/\s+/g, '_') + '.png';
 
-            html2canvas(wrapper, { scale: 3, useCORS: true, backgroundColor: '#eef2f5' })
-            .then(canvas => {
+            html2canvas(wrapper, { 
+                scale: 3, 
+                useCORS: true, 
+                allowTaint: true,
+                backgroundColor: '#eef2f5',
+                logging: false
+            }).then(canvas => {
                 document.getElementById('labelFront').style.display = 'block';
                 document.getElementById('labelBack').style.display = 'block';
 
@@ -384,6 +522,9 @@
                 link.download = fileName;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+            }).catch(err => {
+                console.error("Lỗi khi gộp ảnh:", err);
+                alert("Có lỗi xảy ra khi gộp 2 mặt thẻ. Vui lòng thử lại!");
             });
         }
 
@@ -402,6 +543,7 @@
                 updateCard();
 
                 document.getElementById('topSection').style.display = 'none';
+                document.getElementById('customizerBar').style.display = 'none';
                 document.getElementById('mainTitle').innerText = "Thẻ Điện Tử Của Bạn";
 
                 const toast = document.getElementById('toastMessage');
